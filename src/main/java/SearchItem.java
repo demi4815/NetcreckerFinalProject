@@ -1,39 +1,36 @@
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.*;
 import java.io.File;
 import java.io.IOException;
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
 
 public class SearchItem
 {
     String name, description, URL;
 
-    File fileXml = new File("Kulikova Karina.txt");
-
-    protected InternetExplorerDriver setProperty()
+    protected ChromeDriver setProperty()
     {
-        System.setProperty("webdriver.ie.driver", "D:\\IEDriverServer.exe");
-        InternetExplorerDriver driver = new InternetExplorerDriver();
+        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+        ChromeDriver driver = new ChromeDriver();
         return driver;
     }
 
-    protected InternetExplorerDriver openGoogleSearch(InternetExplorerDriver driver)
+    protected void openGoogleSearch(ChromeDriver driver)
     {
         driver.get("http://google.com");
-        return driver;
     }
 
-    protected void setTextToSearchForm(InternetExplorerDriver driver, String text)
+    protected void setTextToSearchForm(ChromeDriver driver, String text)
     {
         WebElement search = driver.findElement(By.name("q"));
         search.sendKeys(text);
-        WebElement buttom = driver.findElement(By.xpath("//span[contains(text(), '" + text + "')]"));
-        buttom.click();
+        //search.sendKeys(Keys.ENTER);
+        driver.findElement(By.xpath("//*[contains(@class, 'FPdoLc')]//*[@name='btnK']")).click();
         try
         {
             File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(scrFile, new File("netcracker official website.png"));
+            FileUtils.copyFile(scrFile, new File("netcracker official website.png"));//*[@id="contents"]/span
         }
         catch (IOException e)
         {
@@ -41,14 +38,17 @@ public class SearchItem
         }
     }
 
-    protected void pressLink(InternetExplorerDriver driver, String link, String URL)
+    protected void pressLink(ChromeDriver driver, String link, String URL)
     {
-        WebElement buttom = driver.findElement(By.xpath("//span[contains(text(), '" + link + "')]"));
+        //WebElement buttom = driver.findElement(By.xpath("//span[contains(text(), '" + link + "')]"));
+        WebElement buttom = driver.findElement(By.xpath("//span[text()='Netcracker - Home']"));
         buttom.click();
 
         if(!URL.equals(driver.getCurrentUrl()))
         {
-            System.out.println("Wrong URL");
+            System.out.println("Wrong URL " + driver.getCurrentUrl());
+            //URL will always be wrong because you have to accept the agreement
+            //and there is another URL
         }
 
         try
@@ -61,6 +61,125 @@ public class SearchItem
             System.out.println("Failed to take screenshot");
         }
     }
+
+    protected void accept(ChromeDriver driver)
+    {
+        WebElement buttom = driver.findElement(By.xpath("//span[text()='Accept']"));
+        buttom.click();
+    }
+
+    protected void netcreckerSearchForm(ChromeDriver driver, String text)
+    {
+        WebElement buttom1 = driver.findElement(By.xpath("//*[@id='search-button-mobile']//*[contains(@class, 'search-icon')]"));
+        buttom1.click();
+
+        WebElement search = driver.findElement(By.xpath("//*[@name='search']"));
+        search.sendKeys(text);
+
+        WebElement buttom2 = driver.findElement(By.xpath("//*[contains(@class, 'search-submit-mobile')]//*[contains(@class, 'search-icon')]"));
+        buttom2.click();
+
+        try
+        {
+            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(scrFile, new File("USA news.png"));
+        }
+        catch (IOException e)
+        {
+            System.out.println("Failed to take screenshot");
+        }
+    }
+
+    /*public bool exists(WebElement element)
+    {
+        try
+        {
+            browser.FindElement(By.CssSelector(cssSelector));
+            return true
+        }
+        catch (Exception ex){}
+
+        return false;
+    }*/
+
+    protected void resultsOfSearchFromPage(ChromeDriver driver, ArrayList<SearchItem> list)
+    {
+        System.out.println("Showing " + driver.findElement(By.xpath("//*[@id='high']")).getText() + " of "
+                + driver.findElement(By.xpath("//*[@id='total']")).getText() + " Results");
+        driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]"));
+
+       /* for (int i = 1; i <= 7; i++)
+        {
+            for (int j = 1; j <= 3; j++)
+            {
+                System.out.println(driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a["
+                        + i + "]/div[" + j + "]")).getText());
+            }
+        }*/
+
+        int i = 1;
+        boolean flag = true;
+        while (flag)
+        {
+            try
+            {
+                driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a[" + i + "]"));
+
+                SearchItem item = new SearchItem();
+                item.name = driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a["
+                        + i + "]/div[1]")).getText();
+                item.description = driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a["
+                        + i + "]/div[2]")).getText();
+                item.URL = driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a["
+                        + i + "]/div[3]")).getText();
+
+                list.add(item);
+
+                i++;
+                /*for (int j = 1; j <= 3; j++)
+                {
+
+                    System.out.println(driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a["
+                            + i + "]/div[" + j + "]")).getText());
+                }*/
+            }
+            catch (Exception e)
+            {
+                flag = false;
+            }
+        }
+
+    }
+
+    protected void contactUs(ChromeDriver driver)
+    {
+        //the browser does not open in full screen, so first you need to open the sub menu
+        WebElement buttom1 = driver.findElement(By.xpath("//*[contains(@class, 'menu-toggle')]"));
+        buttom1.click();
+
+        WebElement buttom2 = driver.findElement(By.xpath("//*[contains(@class, 'sub-menu')]//a[text()='Contact Us']"));
+        buttom2.click();
+
+        try
+        {
+            driver.findElement(By.xpath(" //span[text()='Send Us a Message']"));
+        }
+        catch (Exception e)
+        {
+            System.out.println("Link 'Send Us a Message' does not exist");
+        }
+
+        try
+        {
+            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(scrFile, new File("CONTACT US.png"));
+        }
+        catch (IOException e)
+        {
+            System.out.println("Failed to take screenshot");
+        }
+    }
+
 
 
 }
