@@ -25,8 +25,9 @@ public class SearchItem
     {
         WebElement search = driver.findElement(By.name("q"));
         search.sendKeys(text);
-        //search.sendKeys(Keys.ENTER);
+
         driver.findElement(By.xpath("//*[contains(@class, 'FPdoLc')]//*[@name='btnK']")).click();
+
         try
         {
             File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
@@ -40,7 +41,6 @@ public class SearchItem
 
     protected void pressLink(ChromeDriver driver, String link, String URL)
     {
-        //WebElement buttom = driver.findElement(By.xpath("//span[contains(text(), '" + link + "')]"));
         WebElement buttom = driver.findElement(By.xpath("//span[text()='Netcracker - Home']"));
         buttom.click();
 
@@ -90,32 +90,11 @@ public class SearchItem
         }
     }
 
-    /*public bool exists(WebElement element)
-    {
-        try
-        {
-            browser.FindElement(By.CssSelector(cssSelector));
-            return true
-        }
-        catch (Exception ex){}
-
-        return false;
-    }*/
-
     protected void resultsOfSearchFromPage(ChromeDriver driver, ArrayList<SearchItem> list)
     {
         System.out.println("Showing " + driver.findElement(By.xpath("//*[@id='high']")).getText() + " of "
                 + driver.findElement(By.xpath("//*[@id='total']")).getText() + " Results");
         driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]"));
-
-       /* for (int i = 1; i <= 7; i++)
-        {
-            for (int j = 1; j <= 3; j++)
-            {
-                System.out.println(driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a["
-                        + i + "]/div[" + j + "]")).getText());
-            }
-        }*/
 
         int i = 1;
         boolean flag = true;
@@ -136,12 +115,6 @@ public class SearchItem
                 list.add(item);
 
                 i++;
-                /*for (int j = 1; j <= 3; j++)
-                {
-
-                    System.out.println(driver.findElement(By.xpath("//*[contains(@class, 'results-wrapper')]/a["
-                            + i + "]/div[" + j + "]")).getText());
-                }*/
             }
             catch (Exception e)
             {

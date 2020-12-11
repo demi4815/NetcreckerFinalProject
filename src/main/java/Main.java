@@ -7,7 +7,6 @@ public class Main
 {
     public static void main(String[] args)
     {
-
         SearchItem item = new SearchItem();
         ChromeDriver driver = item.setProperty();
         item.openGoogleSearch(driver);
@@ -22,8 +21,6 @@ public class Main
 
         try
         {
-            //File file = new File("Kulikova Karina.txt");
-            //FileWriter writer = new FileWriter(file);
             FileWriter writer = new FileWriter("Kulikova Karina.txt");
 
             for (SearchItem searchItem : list) {
@@ -41,6 +38,14 @@ public class Main
         catch (IOException e)
         {
             System.out.println("Failed to create file or write to file");
+
+            for (SearchItem searchItem : list)
+            {
+                System.out.println(searchItem.name);
+                System.out.println(searchItem.description);
+                System.out.println(searchItem.URL);
+                System.out.println();
+            }
         }
 
     }
