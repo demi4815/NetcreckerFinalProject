@@ -1,3 +1,7 @@
+package netcrecker.testMethods;
+
+import netcrecker.item.SearchItem;
+import netcrecker.util.Screenshot;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.*;
@@ -5,41 +9,31 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SearchItem
+public class GoogleTestMethods
 {
-    String name, description, URL;
-
-    protected ChromeDriver setProperty()
+    protected static ChromeDriver setProperty()
     {
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         ChromeDriver driver = new ChromeDriver();
         return driver;
     }
 
-    protected void openGoogleSearch(ChromeDriver driver)
+    protected  static void openGoogleSearch(ChromeDriver driver)
     {
         driver.get("http://google.com");
     }
 
-    protected void setTextToSearchForm(ChromeDriver driver, String text)
+    protected  static void setTextToSearchForm(ChromeDriver driver, String text)
     {
         WebElement search = driver.findElement(By.name("q"));
         search.sendKeys(text);
 
         driver.findElement(By.xpath("//*[contains(@class, 'FPdoLc')]//*[@name='btnK']")).click();
 
-        try
-        {
-            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(scrFile, new File("netcracker official website.png"));//*[@id="contents"]/span
-        }
-        catch (IOException e)
-        {
-            System.out.println("Failed to take screenshot");
-        }
+        Screenshot.screenshot(driver, "netcracker official website.png");
     }
 
-    protected void pressLink(ChromeDriver driver, String link, String URL)
+    protected  static void pressLink(ChromeDriver driver, String link, String URL)
     {
         WebElement buttom = driver.findElement(By.xpath("//span[text()='Netcracker - Home']"));
         buttom.click();
@@ -51,24 +45,16 @@ public class SearchItem
             //and there is another URL
         }
 
-        try
-        {
-            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(scrFile, new File("Netcracker – Home.png"));
-        }
-        catch (IOException e)
-        {
-            System.out.println("Failed to take screenshot");
-        }
+        Screenshot.screenshot(driver, "Netcracker – Home.png");
     }
 
-    protected void accept(ChromeDriver driver)
+    protected static void accept(ChromeDriver driver)
     {
         WebElement buttom = driver.findElement(By.xpath("//span[text()='Accept']"));
         buttom.click();
     }
 
-    protected void netcreckerSearchForm(ChromeDriver driver, String text)
+    protected static void netcreckerSearchForm(ChromeDriver driver, String text)
     {
         WebElement buttom1 = driver.findElement(By.xpath("//*[@id='search-button-mobile']//*[contains(@class, 'search-icon')]"));
         buttom1.click();
@@ -79,18 +65,10 @@ public class SearchItem
         WebElement buttom2 = driver.findElement(By.xpath("//*[contains(@class, 'search-submit-mobile')]//*[contains(@class, 'search-icon')]"));
         buttom2.click();
 
-        try
-        {
-            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(scrFile, new File("USA news.png"));
-        }
-        catch (IOException e)
-        {
-            System.out.println("Failed to take screenshot");
-        }
+        Screenshot.screenshot(driver, "USA news.png");
     }
 
-    protected void resultsOfSearchFromPage(ChromeDriver driver, ArrayList<SearchItem> list)
+    protected static void resultsOfSearchFromPage(ChromeDriver driver, ArrayList<SearchItem> list)
     {
         System.out.println("Showing " + driver.findElement(By.xpath("//*[@id='high']")).getText() + " of "
                 + driver.findElement(By.xpath("//*[@id='total']")).getText() + " Results");
@@ -124,7 +102,7 @@ public class SearchItem
 
     }
 
-    protected void contactUs(ChromeDriver driver)
+    protected static void contactUs(ChromeDriver driver)
     {
         //the browser does not open in full screen, so first you need to open the sub menu
         WebElement buttom1 = driver.findElement(By.xpath("//*[contains(@class, 'menu-toggle')]"));
@@ -142,15 +120,22 @@ public class SearchItem
             System.out.println("Link 'Send Us a Message' does not exist");
         }
 
-        try
-        {
-            File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(scrFile, new File("CONTACT US.png"));
-        }
-        catch (IOException e)
-        {
-            System.out.println("Failed to take screenshot");
-        }
+        Screenshot.screenshot(driver, "CONTACT US.png");
+    }
+
+    public static ArrayList<SearchItem> allGoogleTestMethods()
+    {
+        ChromeDriver driver = setProperty();
+        openGoogleSearch(driver);
+        setTextToSearchForm(driver, "netcracker official website");
+        pressLink(driver, "Netcracker – Home", "https://www.netcracker.com");
+        accept(driver);
+        netcreckerSearchForm(driver, "USA");
+        ArrayList<SearchItem> list = new ArrayList<SearchItem>();
+        resultsOfSearchFromPage(driver, list);
+        contactUs(driver);
+        driver.quit();
+        return list;
     }
 
 
